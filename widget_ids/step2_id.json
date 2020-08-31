@@ -1,0 +1,15 @@
+{
+    "QPushButton": [
+        "backButton",
+        "createGraphButton"
+    ],
+
+    "QDateTimeEdit": [
+        "startDate",
+        "endDate"
+    ],
+
+    "QCheckBox": [
+        "graphAllCheckBox"
+    ]
+}

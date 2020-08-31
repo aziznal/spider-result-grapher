@@ -1,0 +1,9 @@
+{
+    "QPushButton": [
+        "nextButton"
+    ],
+
+    "QComboBox": [
+        "bankDropDownMenu"
+    ]
+}
