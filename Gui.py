@@ -2,6 +2,14 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import *
 
 
+# Bank names
+ISBANK = 0
+KUVEYTTURK = 1
+VAKIFBANK = 2
+YAPIKREDI = 3
+ZIRAAT = 4
+
+
 class Gui(QMainWindow):
 
     def __init__(self, widget_ids: dict, gui_file_path: str):
@@ -29,8 +37,10 @@ class Step1(Gui):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.next_button = self.find_next_button()
-        self.combobox = self.find_combobox()
+        self.next_button: QPushButton = self.find_next_button()
+        self.combobox: QComboBox = self.find_combobox()
+
+        self.current_bank = ISBANK
 
         self.add_all_listeners()
 
@@ -45,10 +55,13 @@ class Step1(Gui):
         self.combobox.activated.connect(self.combobox_onclick)
 
     def next_button_onclick(self):
-        print("next")
+        self.goto_step2()
 
     def combobox_onclick(self):
-        print(self.combobox.currentText())
+        self.current_bank = self.combobox.currentIndex()
+
+    def goto_step2(self):
+        print(self.current_bank)
 
 
 class Step2(Gui):
