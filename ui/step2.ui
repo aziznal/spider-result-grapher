@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>377</width>
-    <height>236</height>
+    <width>367</width>
+    <height>229</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Choose Time Interval</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="createGraphButton">
@@ -137,7 +137,7 @@
      <string>dd/MM/yyyy HH:mm</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="graphAllCheckbox">
+   <widget class="QCheckBox" name="graphAllCheckBox">
     <property name="geometry">
      <rect>
       <x>40</x>
