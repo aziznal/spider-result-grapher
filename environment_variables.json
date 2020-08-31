@@ -1,13 +1,11 @@
 {
     "gui": {
         "step1": "ui/step1.ui",
-        "step2": "ui/step2.ui",
-        "step3": "ui/step3.ui"
+        "step2": "ui/step2.ui"
     },
 
     "widgets": {
         "step1": "widget_ids/step1_id.json",
-        "step2": "widget_ids/step2_id.json",
-        "step3": "widget_ids/step3_id.json"
+        "step2": "widget_ids/step2_id.json"
     }
 }

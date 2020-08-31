@@ -139,15 +139,21 @@ class Step2(Gui):
     def graph_button_onclick(self):
 
         if self.checkbox.isChecked():
-            self.goto_step3(all_=True)
+            self.goto_create_graph(all_=True)
 
         else:
             self.start_datetime_check()
             self.end_datetime_check()
-            self.goto_step3()
+            self.goto_create_graph()
 
     def start_datetime_check(self):
         print(self.start_datetime.text())
+
+    def get_selected_interval(self):
+        interval_1 = self.start_datetime.text()
+        interval_2 = self.end_datetime.text()
+
+        return interval_1, interval_2
 
     def end_datetime_check(self):
         print(self.end_datetime.text())
@@ -156,18 +162,9 @@ class Step2(Gui):
         self.hide()
         self.step1.show()
 
-    def goto_step3(self, all_=False):
+    def goto_create_graph(self, all_=False):
         if all_:
-            print("Graphing all")
+            create_graph(all_=True)
 
         else:
-            pass
-
-class Step3(Gui):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.add_all_listeners()
-
-    def add_all_listeners(self):
-        pass
+            create_graph(*self.get_selected_interval())
