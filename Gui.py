@@ -3,6 +3,8 @@ from PyQt5.QtWidgets import *
 
 from functions import *
 
+from time import sleep
+
 
 # Bank names
 ISBANK = 0
@@ -78,6 +80,8 @@ class Step1(Gui):
 
     def goto_step2(self):
         self.hide()
+
+        sleep(0.05) # for better transition
 
         if not self.step2_created:
             self.create_step2_window()
@@ -160,6 +164,9 @@ class Step2(Gui):
 
     def goto_step1(self):
         self.hide()
+
+        sleep(0.05) # for better transition
+
         self.step1.show()
 
     def goto_create_graph(self, all_=False):
