@@ -1,0 +1,30 @@
+{
+    "QComboBox": [
+        "bankDropDownMenu",
+        "startDateComboBox",
+        "endDateComboBox"
+    ],
+
+    "QLabel": [
+        "selectedBankLabel"
+    ],
+
+    "QCheckBox": [
+        "useAllDataCheckBox",
+        "saveGraphCheckBox"
+    ],
+
+    "QTimeEdit": [
+        "startTime",
+        "endTime"
+    ],
+
+    "QLineEdit": [
+        "graphFilename"
+    ],
+
+    "QTextBrowser": [
+        "statResults"
+    ]
+
+}

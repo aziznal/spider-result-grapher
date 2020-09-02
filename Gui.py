@@ -197,3 +197,65 @@ class Step2(Gui):
                          save_graph=self.save_graph.isChecked(),
                          graph_filename=self.filename_edit.text()
                          )
+
+
+class App(Gui):
+    def __init__(self, widget_ids, gui_file_path):
+        super().__init__(widget_ids, gui_file_path)
+
+        self.current_bank = 0
+
+        self.bank_list, self.start_date, self.end_date = self.find_comboboxes()
+        self.bank_label = self.find_bank_label()
+        self.use_all, self.save_graph = self.find_checkboxes()
+        self.start_time, self.end_time = self.find_time_edits()
+        self.graph_filename = self.find_graph_filename()
+        self.stat_results = self.find_stats_box()
+
+    def add_all_listeners(self):
+        self.bank_list.clicked.connect(self.bank_list_listener)
+
+    def find_comboboxes(self):
+
+        comboboxes = [
+            self.widget_objects['bankDropDownMenu'],
+            self.widget_objects['startDateComboBox'],
+            self.widget_objects['endDateComboBox']
+        ]
+
+        return comboboxes
+
+    def find_bank_label(self):
+        return self.widget_objects['selectedBankLabel']
+
+    def find_checkboxes(self):
+        checkboxes = [
+            self.widget_objects['useAllDataCheckBox'],
+            self.widget_objects['saveGraphCheckBox']
+        ]
+
+        return checkboxes
+
+    def find_time_edits(self):
+        timeedits = [
+            self.widget_objects['startTime'],
+            self.widget_objects['endTime']
+        ]
+
+        return timeedits
+
+    def find_graph_filename(self):
+        return self.widget_objects['graphFilename']
+
+    def find_stats_box(self):
+        return self.widget_objects['statResults']
+
+    def bank_list_listener(self):
+        self.current_bank = self.bank_list.currentIndex()
+        self.bank_label = self.bank_list.currentText()
+
+    def start_date_listener(self):
+        pass
+
+    def end_date_listener(self):
+        pass
