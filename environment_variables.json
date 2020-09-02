@@ -7,5 +7,13 @@
     "widgets": {
         "step1": "widget_ids/step1_id.json",
         "step2": "widget_ids/step2_id.json"
-    }
+    },
+
+    "data": [
+        "./results/isbank-spyder_results.csv",
+        "./results/kuveytturk-spyder_results.csv",
+        "./results/vakifbank-spyder_results.csv",
+        "./results/yapikredi-spyder_results.csv",
+        "./results/ziraat-spyder_results.csv"
+    ]
 }

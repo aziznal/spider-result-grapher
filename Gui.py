@@ -78,6 +78,10 @@ class Step1(Gui):
 
         self.step2_created = True
 
+    def show_step2_window(self):
+        self.step2_window.current_bank = self.current_bank
+        self.step2_window.show()
+
     def goto_step2(self):
         self.hide()
 
@@ -86,7 +90,7 @@ class Step1(Gui):
         if not self.step2_created:
             self.create_step2_window()
 
-        self.step2_window.show()
+        self.show_step2_window()
            
 
 class Step2(Gui):
@@ -171,7 +175,8 @@ class Step2(Gui):
 
     def goto_create_graph(self, all_=False):
         if all_:
-            create_graph(all_=True)
+            create_graph(bank=self.current_bank, graph_all_results=True)
 
         else:
-            create_graph(*self.get_selected_interval())
+            print("current bank is " + str(self.current_bank))
+            create_graph(*self.get_selected_interval(), bank=self.current_bank)
