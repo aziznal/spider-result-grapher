@@ -34,7 +34,7 @@ def create_graph(*intervals, bank, graph_all_results=False):
     data = load_data(bank)
 
     if graph_all_results:
-        grapher = Grapher(data=data, intervals=intervals)
+        grapher = Grapher(data=data)
 
         grapher.create_graph()
 

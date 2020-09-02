@@ -20,7 +20,6 @@ class Grapher:
             # Skip 1st iteration to set prev_val
             if index == 0:
                 prev_val = row
-                print(prev_val)
                 continue
             
             # Actual Loop
@@ -115,13 +114,40 @@ class Grapher:
 
         return data
 
+    def _find_first_that_matches(self, value):
+        """
+        return index of first row with 'date' and 'hour_minute' columns
+        matching given value. Raise Exception otherwise.
+        """    
+        date, time = value.split(' ')
+
+        time_val = ":".join(time.split(':')[:2]) + ":00"
+
+        datelist = self.data[self.data['date'] == date]
+
+        for i, row in datelist.iterrows():
+            val = row[-1]
+
+            if val == time_val:
+                print(f"Found matching val at {i}")
+                return i
+
+        return -1
+            
     def _apply_intervals(self, intervals):
         """
         sets data to only the rows that are within the given intervals
 
-        example of intervals: ('31/08/2020 09:00', '31/08/2020 18:00')
+        example of intervals: ('31-08-2020 09:00', '31-08-2020 18:00')
         """
-        pass
+
+        first_index = self._find_first_that_matches(intervals[0])
+        last_index = self._find_first_that_matches(intervals[1])
+
+        if first_index == -1 or last_index == -1:
+            print("Bad Interval was given")
+
+        self.data = self.data[first_index:last_index]
 
     def _set_intervals(self, intervals):
         if intervals is None:
@@ -137,8 +163,8 @@ class Grapher:
 
         figure = plt.figure()
 
-        plt.plot('time', 'selling', data=self.data[:10])
-        plt.plot('time', 'buying', data=self.data[:10])
+        plt.plot('time', 'selling', data=self.data)
+        plt.plot('time', 'buying', data=self.data)
 
         # Clear xtick labels
         plt.xticks([])

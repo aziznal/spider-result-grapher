@@ -145,26 +145,13 @@ class Step2(Gui):
             self.end_datetime.setDisabled(False)
 
     def graph_button_onclick(self):
-
-        if self.checkbox.isChecked():
-            self.goto_create_graph(all_=True)
-
-        else:
-            self.start_datetime_check()
-            self.end_datetime_check()
-            self.goto_create_graph()
-
-    def start_datetime_check(self):
-        print(self.start_datetime.text())
+        self.goto_create_graph(all_=self.checkbox.isChecked())
 
     def get_selected_interval(self):
         interval_1 = self.start_datetime.text()
         interval_2 = self.end_datetime.text()
 
         return interval_1, interval_2
-
-    def end_datetime_check(self):
-        print(self.end_datetime.text())
 
     def goto_step1(self):
         self.hide()
@@ -178,5 +165,4 @@ class Step2(Gui):
             create_graph(bank=self.current_bank, graph_all_results=True)
 
         else:
-            print("current bank is " + str(self.current_bank))
             create_graph(*self.get_selected_interval(), bank=self.current_bank)
