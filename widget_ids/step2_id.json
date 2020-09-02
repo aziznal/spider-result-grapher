@@ -10,6 +10,11 @@
     ],
 
     "QCheckBox": [
-        "graphAllCheckBox"
+        "graphAllCheckBox",
+        "saveGraphCheckBox"
+    ],
+
+    "QLineEdit": [
+        "filenameLineEdit"
     ]
 }

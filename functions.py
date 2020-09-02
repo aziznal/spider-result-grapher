@@ -9,6 +9,14 @@ VAKIFBANK = 2
 YAPIKREDI = 3
 ZIRAAT = 4
 
+banknames = {
+    ISBANK: "İşbankası",
+    KUVEYTTURK: "KüveytTürk",
+    VAKIFBANK: "Vakıf",
+    YAPIKREDI: "YapıKredi",
+    ZIRAAT: "Ziraat"
+}
+
 
 def load_json(path):
     with open(path) as file:
@@ -29,16 +37,24 @@ def get_env_vars():
     return env_vars
 
 
-def create_graph(*intervals, bank, graph_all_results=False):
+def create_graph(intervals, bank, graph_all_results=False, save_graph=False, graph_filename=""):
 
     data = load_data(bank)
 
     if graph_all_results:
-        grapher = Grapher(data=data)
+        grapher = Grapher(data=data,
+                          save_graph=save_graph,
+                          graph_filename=graph_filename,
+                          bankname=banknames[bank])
 
         grapher.create_graph()
 
     else:
-        grapher = Grapher(data=data, intervals=intervals)
+        grapher = Grapher(data=data,
+                          intervals=intervals,
+                          save_graph=save_graph,
+                          graph_filename=graph_filename,
+                          bankname=banknames[bank]
+                          )
 
         grapher.create_graph()

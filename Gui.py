@@ -20,7 +20,7 @@ class Gui(QMainWindow):
 
     def __init__(self, widget_ids: dict, gui_file_path: str):
         super().__init__()
-        
+
         # Stores all loaded widgets for easy access
         self.widget_objects = {}
 
@@ -73,7 +73,8 @@ class Step1(Gui):
         gui_path = env_vars['gui']['step2']
         widgets = load_json(env_vars['widgets']['step2'])
 
-        self.step2_window = Step2(self, self.current_bank, widget_ids=widgets, gui_file_path=gui_path)
+        self.step2_window = Step2(
+            self, self.current_bank, widget_ids=widgets, gui_file_path=gui_path)
         self.step2_window.show()
 
         self.step2_created = True
@@ -85,17 +86,19 @@ class Step1(Gui):
     def goto_step2(self):
         self.hide()
 
-        sleep(0.05) # for better transition
+        sleep(0.05)  # for better transition
 
         if not self.step2_created:
             self.create_step2_window()
 
         self.show_step2_window()
-           
+
 
 class Step2(Gui):
     def __init__(self, step1, current_bank, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # REFACTOR: choose better names for variables
 
         self.step1 = step1
         self.current_bank = current_bank
@@ -103,10 +106,13 @@ class Step2(Gui):
         self.back_button = self.find_back_button()
         self.graph_button = self.find_graph_button()
 
-        self.checkbox: QCheckBox = self.find_checkbox()
+        self.checkbox: QCheckBox = self.find_graph_all_checkbox()
 
         self.start_datetime: QDateTimeEdit = self.find_start_datetime()
         self.end_datetime: QDateTimeEdit = self.find_end_datetime()
+
+        self.save_graph: QCheckBox = self.find_save_graph_checkbox()
+        self.filename_edit: QLineEdit = self.find_filename_input()
 
         self.add_all_listeners()
 
@@ -114,6 +120,7 @@ class Step2(Gui):
         self.back_button.clicked.connect(self.back_button_onclick)
         self.graph_button.clicked.connect(self.graph_button_onclick)
         self.checkbox.clicked.connect(self.checkbox_onclick)
+        self.save_graph.clicked.connect(self.save_graph_onclick)
 
     def find_back_button(self):
         return self.widget_objects['backButton']
@@ -121,7 +128,7 @@ class Step2(Gui):
     def find_graph_button(self):
         return self.widget_objects['createGraphButton']
 
-    def find_checkbox(self):
+    def find_graph_all_checkbox(self):
         return self.widget_objects['graphAllCheckBox']
 
     def find_start_datetime(self):
@@ -129,6 +136,12 @@ class Step2(Gui):
 
     def find_end_datetime(self):
         return self.widget_objects['endDate']
+
+    def find_save_graph_checkbox(self):
+        return self.widget_objects['saveGraphCheckBox']
+
+    def find_filename_input(self):
+        return self.widget_objects['filenameLineEdit']
 
     def back_button_onclick(self):
         self.goto_step1()
@@ -144,6 +157,15 @@ class Step2(Gui):
             self.start_datetime.setDisabled(False)
             self.end_datetime.setDisabled(False)
 
+    def save_graph_onclick(self):
+        if self.save_graph.isChecked():
+            self.filename_edit.setEnabled(True)
+            self.filename_edit.setPlaceholderText('filename.png')
+
+        else:
+            self.filename_edit.setEnabled(False)
+            self.filename_edit.setPlaceholderText('')
+
     def graph_button_onclick(self):
         self.goto_create_graph(all_=self.checkbox.isChecked())
 
@@ -156,13 +178,22 @@ class Step2(Gui):
     def goto_step1(self):
         self.hide()
 
-        sleep(0.05) # for better transition
+        sleep(0.05)  # for better transition
 
         self.step1.show()
 
     def goto_create_graph(self, all_=False):
         if all_:
-            create_graph(bank=self.current_bank, graph_all_results=True)
+            create_graph(bank=self.current_bank,
+                         intervals=None,
+                         graph_all_results=True,
+                         save_graph=self.save_graph.isChecked(),
+                         graph_filename=self.filename_edit.text()
+                         )
 
         else:
-            create_graph(*self.get_selected_interval(), bank=self.current_bank)
+            create_graph(bank=self.current_bank,
+                         intervals=self.get_selected_interval(),
+                         save_graph=self.save_graph.isChecked(),
+                         graph_filename=self.filename_edit.text()
+                         )

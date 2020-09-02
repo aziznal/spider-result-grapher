@@ -1,10 +1,16 @@
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
 
 class Grapher:
-    def __init__(self, data: pd.DataFrame, intervals=None):
+    def __init__(self, data: pd.DataFrame, intervals=None, bankname="", save_graph=False, graph_filename=""):
+        
+        self.bankname = bankname
+
+        self._save_graph = save_graph
+        self.graph_filename = graph_filename
 
         self.data = self._preprocess_data(data)
 
@@ -147,7 +153,8 @@ class Grapher:
         if first_index == -1 or last_index == -1:
             print("Bad Interval was given")
 
-        self.data = self.data[first_index:last_index]
+        else:
+            self.data = self.data[first_index:last_index]
 
     def _set_intervals(self, intervals):
         if intervals is None:
@@ -166,7 +173,24 @@ class Grapher:
         plt.plot('time', 'selling', data=self.data)
         plt.plot('time', 'buying', data=self.data)
 
+        plt.title('USD to TL conversion rates - %s' % self.bankname)
+        plt.xlabel('Time')
+        plt.ylabel('Price - USD to TL')
+
         # Clear xtick labels
         plt.xticks([])
+
+        if self._save_graph:
+            # TODO: automate filename creation
+            print("Saving Graph..")
+
+            try:
+                plt.savefig(self.graph_filename, dpi=900)
+
+            except FileNotFoundError:
+                dirname = self.graph_filename.split('/')[0]
+                os.mkdir(dirname)
+
+                plt.savefig(self.graph_filename, dpi=600)
 
         plt.show()
