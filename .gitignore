@@ -1,6 +1,7 @@
 # Files
 install.bat
 run.bat
+trash.py
 
 # Directories
 venv
