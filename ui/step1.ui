@@ -7,42 +7,18 @@
     <x>0</x>
     <y>0</y>
     <width>408</width>
-    <height>149</height>
+    <height>213</height>
    </rect>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>408</width>
-    <height>149</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>408</width>
-    <height>149</height>
-   </size>
   </property>
   <property name="windowTitle">
    <string>Choose Bank</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <property name="minimumSize">
-    <size>
-     <width>408</width>
-     <height>149</height>
-    </size>
-   </property>
-   <property name="maximumSize">
-    <size>
-     <width>408</width>
-     <height>149</height>
-    </size>
-   </property>
    <widget class="QPushButton" name="nextButton">
     <property name="geometry">
      <rect>
       <x>310</x>
-      <y>110</y>
+      <y>170</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -67,40 +43,83 @@
      <string>Choose which bank's results you would like to graph from the list</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="bankDropDownMenu">
+   <widget class="QCheckBox" name="selectAllCheckBox">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>40</x>
       <y>40</y>
       <width>231</width>
       <height>21</height>
      </rect>
     </property>
-    <item>
-     <property name="text">
-      <string>İşbankası</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>KuveytTürk</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>VakıfBank</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>YapiKredi</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Ziraat</string>
-     </property>
-    </item>
+    <property name="text">
+     <string>Select All</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="isbankCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>70</y>
+      <width>231</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>ISBANK</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="kuveytturkCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>90</y>
+      <width>231</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>KUVEYTTURK</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="vakifCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>110</y>
+      <width>231</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>VAKIF</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="yapikrediCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>130</y>
+      <width>231</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>YAPIKREDI</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="ziraatCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>150</y>
+      <width>231</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>ZIRAAT</string>
+    </property>
    </widget>
   </widget>
  </widget>

@@ -14,23 +14,24 @@ ZIRAAT = '#ff2a00'          # Red
 
 def get_color_from_bankname(bankname):
 
-    bankname = bankname.lower()
-
-    print(bankname)
-
-    if bankname == 'i̇şbankası':
+    if bankname == 'ISBANK':
+        print(bankname)
         return ISBANK
 
-    if bankname == 'küveyttürk':
+    if bankname == 'KUVEYTTURK':
+        print(bankname)
         return KUVEYTTURK
 
-    if bankname == 'vakıf':
+    if bankname == 'VAKIF':
+        print(bankname)
         return VAKIF
 
-    if bankname == 'yapıkredi':
+    if bankname == 'YAPIKREDI':
+        print(bankname)
         return YAPIKREDI
 
-    if bankname == 'ziraat':
+    if bankname == 'ZIRAAT':
+        print(bankname)
         return ZIRAAT
 
 
@@ -136,6 +137,24 @@ class Grapher:
 
         data['hour_minute'] = np.array(hourminute_column)
 
+    def _remove_data_spikes(self, data):
+        print("Getting all data spikes: ")
+
+        if self.bankname == 'ziraat':
+            self.data.drop('eff_buying')
+            self.data.drop('eff_selling')
+
+        data_spikes = data[data['buying'] / data['selling'] > 1.015]
+
+        before = len(data)
+
+        cond = data['buying'].isin(data_spikes['buying'])
+        data.drop(data[cond].index, inplace = True)
+
+        after = len(data)
+
+        print(f"Removed {before - after} spikes in data")
+
     def _preprocess_data(self, data):
         """
         Fixes non-unique entries in the time column and
@@ -147,6 +166,8 @@ class Grapher:
         self._create_date_column(data)
 
         self._create_hour_column(data)
+
+        self._remove_data_spikes(data)
 
         return data
 
@@ -193,23 +214,11 @@ class Grapher:
         else:
             self._apply_intervals(intervals)
 
-    def get_tick_labels(self, tick_positions):
-        for i in tick_positions:
-            yield self.data.at[i, 'date'] + " " + self.data.at[i, 'hour_minute']
-
-    def set_xtick_labels(self):
-
-        tick_pos = [i * len(self.data)//10 for i in range(10)]
-        tick_labels = list(self.get_tick_labels(tick_pos))
-
-        # Set text labels and properties.
-        plt.xticks(tick_pos, tick_labels, rotation=45, ha='right', fontsize=7)
-
     def create_graph(self):
 
         print(self.data.head())
 
-        figure = plt.figure()
+        figure, ax = plt.subplots()
 
         color = get_color_from_bankname(self.bankname)
 
@@ -218,12 +227,78 @@ class Grapher:
 
         plt.title('USD to TL conversion rates - %s' % self.bankname)
         plt.xlabel('Time')
-        plt.ylabel('Price - USD to TL')
+        plt.ylabel('Price (TL)')
 
-        # Clear xtick labels
-        # plt.xticks([])
+        # Some settings for xticklabels
+        ax.xaxis.set_major_locator(plt.MaxNLocator(9))
+        plt.xticks(rotation=45, ha='right', fontsize=7)
 
-        self.set_xtick_labels()
+        # self.set_xtick_labels()
+
+        figure.tight_layout()
+
+        if self._save_graph:
+            # TODO: automate filename creation
+            print("Saving Graph..")
+
+            try:
+                plt.savefig(self.graph_filename, dpi=900)
+
+            except FileNotFoundError:
+                dirname = self.graph_filename.split('/')[0]
+                os.mkdir(dirname)
+
+                plt.savefig(self.graph_filename, dpi=600)
+
+        plt.show()
+
+
+class SuperGrapher(Grapher):
+    def __init__(self, all_bank_data: dict, intervals=None, save_graph=False, graph_filename=''):
+        """
+        :param data (dict): a dictionary with the form {bankname: bankdata}
+        """
+
+        self._save_graph = save_graph
+        self.graph_filename = graph_filename
+
+        self.all_bank_data = all_bank_data
+
+        self.graphers = {}
+
+        for bankname, bankdata in self.all_bank_data.items():
+            self.graphers[bankname] = Grapher(
+                data=bankdata,
+                intervals=intervals,
+                bankname=bankname,
+                save_graph=False,
+                graph_filename=False
+            ).data
+    
+    def create_overlayed_graph(self):
+        figure, ax = plt.subplots()
+
+        for bankname, bankdata in self.graphers.items():
+
+            color = get_color_from_bankname(bankname)
+            plt.plot('time', 'buying', data=bankdata, c=color, linewidth=1)
+            plt.plot('time', 'selling', data=bankdata, c=color, linewidth=1)
+
+        plt.title('USD to TL conversion rates - All banks')
+        plt.xlabel('Time')
+        plt.ylabel('Price (TL)')
+
+        # Some settings for xticklabels
+        ax.xaxis.set_major_locator(plt.MaxNLocator(9))
+        plt.xticks(rotation=45, ha='right', fontsize=7)
+
+        
+        # plt.legend([name for name in self.all_bank_data.keys()])
+        labels = []
+        for names in zip(self.graphers.keys(), self.graphers.keys()):
+            labels.append(names[0] + "- Buying")
+            labels.append(names[1] + "- Selling")
+        plt.legend(labels)
 
         figure.tight_layout()
 

@@ -3,7 +3,13 @@
         "nextButton"
     ],
 
-    "QComboBox": [
-        "bankDropDownMenu"
+    "QCheckBox": [
+        "isbankCheckBox",
+        "kuveytturkCheckBox",
+        "vakifCheckBox",
+        "yapikrediCheckBox",
+        "ziraatCheckBox",
+
+        "selectAllCheckBox"
     ]
 }

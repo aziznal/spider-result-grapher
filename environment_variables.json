@@ -9,11 +9,19 @@
         "step2": "widget_ids/step2_id.json"
     },
 
-    "data": [
-        "./results/isbank-spyder_results.csv",
-        "./results/kuveytturk-spyder_results.csv",
-        "./results/vakifbank-spyder_results.csv",
-        "./results/yapikredi-spyder_results.csv",
-        "./results/ziraat-spyder_results.csv"
+    "data": {
+        "ISBANK": "./results/isbank-spyder_results.csv",
+        "KUVEYTTURK": "./results/kuveytturk-spyder_results.csv",
+        "VAKIF": "./results/vakifbank-spyder_results.csv",
+        "YAPIKREDI": "./results/yapikredi-spyder_results.csv",
+        "ZIRAAT": "./results/ziraat-spyder_results.csv"
+    },
+
+    "banknames": [
+        "ISBANK",
+        "KUVEYTTURK",
+        "VAKIF",
+        "YAPIKREDI",
+        "ZIRAAT"
     ]
 }

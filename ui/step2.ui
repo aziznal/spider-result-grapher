@@ -167,7 +167,7 @@
       </time>
      </property>
      <property name="currentSection">
-      <enum>QDateTimeEdit::HourSection</enum>
+      <enum>QDateTimeEdit::DaySection</enum>
      </property>
      <property name="displayFormat">
       <string>dd-MM-yy HH:mm</string>
@@ -224,7 +224,7 @@
       </time>
      </property>
      <property name="currentSection">
-      <enum>QDateTimeEdit::HourSection</enum>
+      <enum>QDateTimeEdit::DaySection</enum>
      </property>
      <property name="displayFormat">
       <string>dd-MM-yy HH:mm</string>

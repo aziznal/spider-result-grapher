@@ -1,21 +1,6 @@
 import json
 import pandas as pd
-from Grapher import Grapher
-
-# Banks
-ISBANK = 0
-KUVEYTTURK = 1
-VAKIFBANK = 2
-YAPIKREDI = 3
-ZIRAAT = 4
-
-banknames = {
-    ISBANK: "İşbankası",
-    KUVEYTTURK: "KüveytTürk",
-    VAKIFBANK: "Vakıf",
-    YAPIKREDI: "YapıKredi",
-    ZIRAAT: "Ziraat"
-}
+from Grapher import Grapher, SuperGrapher
 
 
 def load_json(path):
@@ -25,8 +10,7 @@ def load_json(path):
 
 env_vars = load_json('environment_variables.json')
 
-
-# NOTE: put all new functions below this line
+banknames = env_vars['banknames']
 
 
 def load_data(bank):
@@ -37,15 +21,21 @@ def get_env_vars():
     return env_vars
 
 
-def create_graph(intervals, bank, graph_all_results=False, save_graph=False, graph_filename=""):
+def get_chosen_bank(banks):
+    return [key for key, val in banks.items() if val == True][0]
 
-    data = load_data(bank)
+
+def create_graph(intervals, chosen_banks, graph_all_results=False, save_graph=False, graph_filename=""):
+
+    bankname = get_chosen_bank(chosen_banks)
+
+    data = load_data(bankname)
 
     if graph_all_results:
         grapher = Grapher(data=data,
                           save_graph=save_graph,
                           graph_filename=graph_filename,
-                          bankname=banknames[bank])
+                          bankname=bankname)
 
         grapher.create_graph()
 
@@ -54,7 +44,23 @@ def create_graph(intervals, bank, graph_all_results=False, save_graph=False, gra
                           intervals=intervals,
                           save_graph=save_graph,
                           graph_filename=graph_filename,
-                          bankname=banknames[bank]
+                          bankname=bankname
                           )
 
         grapher.create_graph()
+
+
+def create_overlayed_graph(intervals, chosen_banks, graph_all_results, save_graph, graph_filename):
+    data = {bankname: load_data(bankname) for bankname, val in chosen_banks.items() if val == True}
+
+    if graph_all_results:
+        intervals = None
+
+    grapher = SuperGrapher(
+        all_bank_data=data,
+        intervals=intervals,
+        save_graph=save_graph,
+        graph_filename=graph_filename
+    )
+
+    grapher.create_overlayed_graph()

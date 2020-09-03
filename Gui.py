@@ -5,15 +5,8 @@ from functions import *
 
 from time import sleep
 
-
-# Bank names
-ISBANK = 0
-KUVEYTTURK = 1
-VAKIFBANK = 2
-YAPIKREDI = 3
-ZIRAAT = 4
-
 env_vars = get_env_vars()
+banknames = env_vars['banknames']
 
 
 class Gui(QMainWindow):
@@ -44,9 +37,10 @@ class Step1(Gui):
         super().__init__(*args, **kwargs)
 
         self.next_button: QPushButton = self.find_next_button()
-        self.combobox: QComboBox = self.find_combobox()
+        self.bank_checkboxes = self.find_bank_checkboxes()
+        self.select_all = self.find_select_all_checkbox()
 
-        self.current_bank = ISBANK
+        self.chosen_banks = {name: False for name in banknames}
 
         self.step2_created = False
         self.step2_window = None
@@ -56,31 +50,56 @@ class Step1(Gui):
     def find_next_button(self):
         return self.widget_objects['nextButton']
 
-    def find_combobox(self):
-        return self.widget_objects['bankDropDownMenu']
+    def find_bank_checkboxes(self):
+        return [
+            self.widget_objects['isbankCheckBox'],
+            self.widget_objects["kuveytturkCheckBox"],
+            self.widget_objects["vakifCheckBox"],
+            self.widget_objects["yapikrediCheckBox"],
+            self.widget_objects["ziraatCheckBox"],
+        ]
+
+    def find_select_all_checkbox(self):
+        return self.widget_objects['selectAllCheckBox']
 
     def add_all_listeners(self):
         self.next_button.clicked.connect(self.next_button_onclick)
-        self.combobox.activated.connect(self.combobox_onclick)
+        [checkbox.clicked.connect(self.bank_checkbox_onclick)
+         for checkbox in self.bank_checkboxes]
+        self.select_all.clicked.connect(self.select_all_onclick)
 
     def next_button_onclick(self):
         self.goto_step2()
 
-    def combobox_onclick(self):
-        self.current_bank = self.combobox.currentIndex()
+    def bank_checkbox_onclick(self):
+        for checkbox in self.bank_checkboxes:
+            self.chosen_banks[checkbox.text().upper()] = checkbox.isChecked()
+
+    def select_all_onclick(self):
+        [checkbox.setDisabled(self.select_all.isChecked())
+         for checkbox in self.bank_checkboxes]
+
+        for bank in self.chosen_banks.keys():
+            self.chosen_banks[bank] = self.select_all.isChecked()
+
+        if not self.select_all.isChecked():
+            self.bank_checkbox_onclick()
 
     def create_step2_window(self):
         gui_path = env_vars['gui']['step2']
         widgets = load_json(env_vars['widgets']['step2'])
 
-        self.step2_window = Step2(
-            self, self.current_bank, widget_ids=widgets, gui_file_path=gui_path)
-        self.step2_window.show()
+        self.step2_window = Step2(self,
+                                  chosen_banks=self.chosen_banks,
+                                  widget_ids=widgets,
+                                  gui_file_path=gui_path
+                                  )
 
+        self.step2_window.show()
         self.step2_created = True
 
     def show_step2_window(self):
-        self.step2_window.current_bank = self.current_bank
+        self.step2_window.chosen_banks = self.chosen_banks
         self.step2_window.show()
 
     def goto_step2(self):
@@ -95,13 +114,13 @@ class Step1(Gui):
 
 
 class Step2(Gui):
-    def __init__(self, step1, current_bank, *args, **kwargs):
+    def __init__(self, step1, chosen_banks, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         # REFACTOR: choose better names for variables
 
         self.step1 = step1
-        self.current_bank = current_bank
+        self.chosen_banks = chosen_banks
 
         self.back_button = self.find_back_button()
         self.graph_button = self.find_graph_button()
@@ -182,18 +201,24 @@ class Step2(Gui):
 
         self.step1.show()
 
+    def multiple_banks_chosen(self):
+        print(self.chosen_banks)
+        return len([val for val in self.chosen_banks.values() if val == True]) > 1
+
     def goto_create_graph(self, all_=False):
-        if all_:
-            create_graph(bank=self.current_bank,
-                         intervals=None,
-                         graph_all_results=True,
-                         save_graph=self.save_graph.isChecked(),
-                         graph_filename=self.filename_edit.text()
-                         )
+        
+        if self.multiple_banks_chosen():
+            create_overlayed_graph(intervals=self.get_selected_interval(),
+                                   chosen_banks=self.chosen_banks,
+                                   save_graph=self.save_graph.isChecked(),
+                                   graph_filename=self.filename_edit.text(),
+                                   graph_all_results=self.checkbox.isChecked()
+                                   )
 
         else:
-            create_graph(bank=self.current_bank,
-                         intervals=self.get_selected_interval(),
+            create_graph(intervals=self.get_selected_interval(),
+                         chosen_banks=self.chosen_banks,
                          save_graph=self.save_graph.isChecked(),
-                         graph_filename=self.filename_edit.text()
+                         graph_filename=self.filename_edit.text(),
+                         graph_all_results=self.checkbox.isChecked()
                          )
