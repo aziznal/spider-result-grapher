@@ -63,7 +63,6 @@ class Grapher:
             if prev_val[0] == row[0]:
                 duplicate_counter += 1
 
-            # df.set_value(index,'ifor',ifor_val)
             prev_val = row
 
         return duplicate_counter > 0
@@ -100,7 +99,7 @@ class Grapher:
                 data.at[index, 'time'] = new_val
 
             else:
-                new_val = self._create_new_time_val(row[0], True)
+                new_val = self._create_new_time_val(row[0], flag=True)
                 data.at[index, 'time'] = new_val
 
             prev_val = row
@@ -140,10 +139,6 @@ class Grapher:
     def _remove_data_spikes(self, data):
         print("Getting all data spikes: ")
 
-        if self.bankname == 'ziraat':
-            self.data.drop('eff_buying')
-            self.data.drop('eff_selling')
-
         data_spikes = data[data['buying'] / data['selling'] > 1.015]
 
         before = len(data)
@@ -158,7 +153,7 @@ class Grapher:
     def _preprocess_data(self, data):
         """
         Fixes non-unique entries in the time column and
-        Divides the time column into 'date' and 'hour' columns
+        Divides the time column into 'date' and 'hour_minute' columns
         """
 
         self._repair_time_column(data)
@@ -174,7 +169,7 @@ class Grapher:
     def _find_first_that_matches(self, value):
         """
         return index of first row with 'date' and 'hour_minute' columns
-        matching given value. Raise Exception otherwise.
+        matching given value.
         """
         date, time = value.split(' ')
 
@@ -201,6 +196,7 @@ class Grapher:
         last_index = self._find_first_that_matches(intervals[1])
 
         if first_index == -1 or last_index == -1:
+            # All data will be graphed in this case
             print("Bad Interval was given")
 
         else:
@@ -242,7 +238,7 @@ class Grapher:
             print("Saving Graph..")
 
             try:
-                plt.savefig(self.graph_filename, dpi=900)
+                plt.savefig(self.graph_filename, dpi=600)
 
             except FileNotFoundError:
                 dirname = self.graph_filename.split('/')[0]
@@ -250,7 +246,12 @@ class Grapher:
 
                 plt.savefig(self.graph_filename, dpi=600)
 
+
+        self.print_std_deviation()
         plt.show()
+
+    def print_std_deviation(self):
+        print(f"Standard deviation of {self.bankname}:\n {self.data.std()}")
 
 
 class SuperGrapher(Grapher):
@@ -292,12 +293,11 @@ class SuperGrapher(Grapher):
         ax.xaxis.set_major_locator(plt.MaxNLocator(9))
         plt.xticks(rotation=45, ha='right', fontsize=7)
 
-        
-        # plt.legend([name for name in self.all_bank_data.keys()])
         labels = []
-        for names in zip(self.graphers.keys(), self.graphers.keys()):
-            labels.append(names[0] + "- Buying")
-            labels.append(names[1] + "- Selling")
+        for name in self.graphers.keys():
+            labels.append(name + "- Buying")
+            labels.append(name + "- Selling")
+
         plt.legend(labels)
 
         figure.tight_layout()
@@ -307,7 +307,7 @@ class SuperGrapher(Grapher):
             print("Saving Graph..")
 
             try:
-                plt.savefig(self.graph_filename, dpi=900)
+                plt.savefig(self.graph_filename, dpi=690)
 
             except FileNotFoundError:
                 dirname = self.graph_filename.split('/')[0]

@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>471</width>
-    <height>478</height>
+    <width>467</width>
+    <height>479</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>467</width>
+    <height>479</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>467</width>
+    <height>479</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Choose Time Interval</string>
@@ -147,7 +159,7 @@
      </property>
      <property name="minimumDate">
       <date>
-       <year>2020</year>
+       <year>1999</year>
        <month>8</month>
        <day>31</day>
       </date>
@@ -202,9 +214,19 @@
        <second>0</second>
       </time>
      </property>
+     <property name="minimumDateTime">
+      <datetime>
+       <hour>9</hour>
+       <minute>0</minute>
+       <second>0</second>
+       <year>1999</year>
+       <month>8</month>
+       <day>31</day>
+      </datetime>
+     </property>
      <property name="minimumDate">
       <date>
-       <year>2020</year>
+       <year>1999</year>
        <month>8</month>
        <day>31</day>
       </date>
