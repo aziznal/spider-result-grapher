@@ -276,6 +276,12 @@ class SuperGrapher(Grapher):
                 graph_filename=False
             ).data
     
+    def keep_only_common_values(self):
+        """
+        For each dataset, keep only the rows which are also present in all other datasets
+        """
+        pass
+
     def create_overlayed_graph(self):
         figure, ax = plt.subplots()
 
