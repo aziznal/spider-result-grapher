@@ -57,7 +57,7 @@ def create_overlayed_graph(intervals, chosen_banks, graph_all_results, save_grap
         intervals = None
 
     grapher = SuperGrapher(
-        all_bank_data=data,
+        raw_bank_data=data,
         intervals=intervals,
         save_graph=save_graph,
         graph_filename=graph_filename
