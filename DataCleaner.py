@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import os
 
 
 class DataCleaner:
@@ -138,6 +139,17 @@ class DataCleaner:
 
         self._remove_data_spikes(self.data)
 
+    def save(self, path):
+        try:
+            self.data.to_csv(path)
+
+        except FileNotFoundError:
+
+            dirname = path.split('/')[0]
+            os.mkdir(dirname)
+
+            self.data.to_csv(path)
+
 
 class DataMerger:
     def __init__(self, datasets):
@@ -222,4 +234,18 @@ class DataMerger:
         # Step 3
         self.remove_uncommon_rows(common_times)
 
-        return self.datasets
+    def _save(self, dataset, path):
+        try:
+            dataset.to_csv(path)
+
+        except FileNotFoundError:
+
+            dirname = path.split('/')[0]
+            os.mkdir(dirname)
+
+            dataset.to_csv(path)
+
+    def save(self, path="merged_data"):
+    
+        for bankname, dataset in self.datasets.items():
+            self._save(dataset, path + "mergeable_" + bankname + ".csv")

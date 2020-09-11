@@ -53,6 +53,8 @@ class Grapher:
         cleaner = DataCleaner(data)
         cleaner.clean()
 
+        cleaner.save("clean_data/clean_" + self.bankname + ".csv")
+
         return cleaner.data
 
     def _find_first_that_matches(self, value):
@@ -173,9 +175,11 @@ class SuperGrapher(Grapher):
     def merge_datasets(self):
 
         merger = DataMerger(self.clean_bank_data)
-        data = merger.merge_data()
+        merger.merge_data()
 
-        return data
+        merger.save(path="merged_data/")
+
+        return merger.datasets
 
     def create_overlayed_graph(self):
 
