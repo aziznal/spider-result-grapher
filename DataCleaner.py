@@ -137,3 +137,89 @@ class DataCleaner:
         self._create_hour_column(self.data)
 
         self._remove_data_spikes(self.data)
+
+
+class DataMerger:
+    def __init__(self, datasets):
+        self.datasets = datasets
+
+    def get_all_unique_dates(self):
+        return next(iter(self.datasets.values()))['date'].unique()
+
+    def create_perfect_time_series(self):
+
+        dates = self.get_all_unique_dates()
+
+        starting_time = [9, 0]
+        ending_time = [17, 59]
+
+        time_list = []
+
+        for date in dates:
+
+            starting_time = [9, 0]
+
+            while starting_time[0] <= ending_time[0]:
+                while starting_time[1] <= ending_time[1]:
+                    prefix1 = "0" if starting_time[0] < 10 else ""
+                    prefix2 = "0" if starting_time[1] < 10 else ""
+
+                    entry = f"{date}_{prefix1 + str(starting_time[0])}:{prefix2 + str(starting_time[1])}:00"
+                    time_list.append(entry)
+
+                    entry = f"{date}_{prefix1 + str(starting_time[0])}:{prefix2 + str(starting_time[1])}:30"
+                    time_list.append(entry)
+
+                    starting_time[1] += 1
+
+                starting_time[0] += 1
+                starting_time[1] = 0
+
+        return pd.Series(data=np.array(time_list))
+
+    def compare_with_common_times(self, common_times):
+        for bankname, data in self.datasets.items():
+            len_before = len(common_times)
+
+            common_times = common_times[common_times.isin(data['time'])]
+
+            len_after = len(common_times)
+
+            print(f"({bankname}) Removed {len_before - len_after} rows from common_times\n")
+
+        return common_times
+
+    def remove_uncommon_rows(self, common_times):
+        for bankname, data in self.datasets.items():
+            len_before = len(self.datasets[bankname])
+
+            self.datasets[bankname] = data[data['time'].isin(common_times)]
+            
+            len_after = len(self.datasets[bankname])
+
+            print(f"({bankname}) Removed {len_before - len_after} rows\n")
+
+    def merge_data(self):
+        """
+        For each dataset, keep only the rows which are also present in all other datasets.
+        This (in theory) should fix the overlapping data bug
+        """
+        # Algorithm:
+        #   1 - Create an artificial common_times Series which has all possible times
+        #
+        #   2 - Foreach bankdata:
+        #       - Remove from common_times rows which are not in current bankdata
+        #   
+        #   3 - Foreach bankdata:
+        #       - Remove from bankdata rows which are not in common_times
+        
+        # Step 1
+        common_times = self.create_perfect_time_series()
+
+        # Step 2
+        common_times = self.compare_with_common_times(common_times)
+
+        # Step 3
+        self.remove_uncommon_rows(common_times)
+
+        return self.datasets
