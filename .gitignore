@@ -3,6 +3,7 @@ install.bat
 run.bat
 trash.py
 bash.exe.stackdump
+all.png
 
 # Directories
 venv
